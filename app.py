@@ -109,9 +109,17 @@ st.markdown(f"""
         border-color: {MPA_YELLOW}; background: {MPA_LIGHT_YEL};
     }}
 
-    /* sidebar */
+    /* ============ sidebar ============ */
     section[data-testid="stSidebar"] {{ background: {MPA_NAVY}; }}
-    section[data-testid="stSidebar"] * {{ color: white !important; }}
+    /* base text: light on navy */
+    section[data-testid="stSidebar"],
+    section[data-testid="stSidebar"] p,
+    section[data-testid="stSidebar"] label,
+    section[data-testid="stSidebar"] span,
+    section[data-testid="stSidebar"] div,
+    section[data-testid="stSidebar"] .stMarkdown {{
+        color: #FFFFFF !important;
+    }}
     section[data-testid="stSidebar"] h1,
     section[data-testid="stSidebar"] h2,
     section[data-testid="stSidebar"] h3 {{
@@ -119,10 +127,89 @@ st.markdown(f"""
         border-bottom: 1px solid {MPA_YELLOW};
         padding-bottom: 4px; margin-top: 1rem;
     }}
-    section[data-testid="stSidebar"] input,
+    /* Captions and help text in soft blue-grey */
+    section[data-testid="stSidebar"] .stCaption,
+    section[data-testid="stSidebar"] small {{
+        color: #BFD3E6 !important;
+    }}
+
+    /* ---- Input wrappers (text / password / number) ----
+       Streamlit uses BaseWeb <div data-baseweb="input"> for the outer shell
+       and a nested <input> for the actual field. Without targeting both,
+       the white default background survives and makes white text invisible. */
+    section[data-testid="stSidebar"] [data-baseweb="input"],
+    section[data-testid="stSidebar"] [data-baseweb="select"] > div,
+    section[data-testid="stSidebar"] [data-baseweb="base-input"] {{
+        background-color: rgba(255,255,255,0.10) !important;
+        border: 1px solid {MPA_YELLOW} !important;
+        border-radius: 4px !important;
+        color: #FFFFFF !important;
+    }}
+    section[data-testid="stSidebar"] [data-baseweb="input"] input,
+    section[data-testid="stSidebar"] [data-baseweb="base-input"] input,
+    section[data-testid="stSidebar"] [data-baseweb="select"] input,
     section[data-testid="stSidebar"] textarea {{
-        background: rgba(255,255,255,0.08) !important;
-        color: white !important; border-color: {MPA_YELLOW} !important;
+        background: transparent !important;
+        color: #FFFFFF !important;
+        -webkit-text-fill-color: #FFFFFF !important;  /* Safari password fix */
+        caret-color: {MPA_YELLOW} !important;
+    }}
+    /* placeholder (e.g. "32-character hex string") */
+    section[data-testid="stSidebar"] input::placeholder,
+    section[data-testid="stSidebar"] textarea::placeholder {{
+        color: rgba(255,255,255,0.55) !important;
+    }}
+    /* Number-input +/- step buttons */
+    section[data-testid="stSidebar"] button[data-testid="stNumberInput-StepUp"],
+    section[data-testid="stSidebar"] button[data-testid="stNumberInput-StepDown"] {{
+        background: rgba(244,196,48,0.15) !important;
+        color: {MPA_YELLOW} !important;
+        border-color: {MPA_YELLOW} !important;
+    }}
+
+    /* ---- Multiselect chips — yellow on navy, readable ---- */
+    section[data-testid="stSidebar"] [data-baseweb="tag"] {{
+        background-color: {MPA_YELLOW} !important;
+        color: {MPA_NAVY_DARK} !important;
+        border: none !important;
+    }}
+    section[data-testid="stSidebar"] [data-baseweb="tag"] span,
+    section[data-testid="stSidebar"] [data-baseweb="tag"] div {{
+        color: {MPA_NAVY_DARK} !important;
+        font-weight: 600 !important;
+    }}
+    /* the "x" icon inside a chip */
+    section[data-testid="stSidebar"] [data-baseweb="tag"] svg {{
+        fill: {MPA_NAVY_DARK} !important;
+    }}
+    /* Dropdown chevron */
+    section[data-testid="stSidebar"] [data-baseweb="select"] svg {{
+        fill: {MPA_YELLOW} !important;
+    }}
+
+    /* ---- Checkbox — yellow tick, white label ---- */
+    section[data-testid="stSidebar"] [data-testid="stCheckbox"] label p {{
+        color: white !important;
+    }}
+    section[data-testid="stSidebar"] [data-testid="stCheckbox"] svg {{
+        color: {MPA_YELLOW} !important;
+        fill: {MPA_YELLOW} !important;
+    }}
+
+    /* Links stay yellow */
+    section[data-testid="stSidebar"] a {{
+        color: {MPA_YELLOW} !important; text-decoration: underline;
+    }}
+
+    /* Dropdown menus (appears when opening a selectbox inside sidebar) */
+    div[data-baseweb="popover"] ul {{
+        background: {MPA_NAVY} !important;
+    }}
+    div[data-baseweb="popover"] ul li {{
+        color: white !important;
+    }}
+    div[data-baseweb="popover"] ul li:hover {{
+        background: {MPA_NAVY_DARK} !important; color: {MPA_YELLOW} !important;
     }}
 
     /* metric cards */
