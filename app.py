@@ -61,7 +61,7 @@ OUT_DIR = Path("./outputs_panel")
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # ---------- API keys ----------
-FRED_API_KEY = os.getenv("FRED_API_KEY")
+FRED_API_KEY = os.getenv("c363565dcc9287fed0ceb3a2f8043f73")
 
 # =============================================================================
 # 1. COUNTRY UNIVERSE
