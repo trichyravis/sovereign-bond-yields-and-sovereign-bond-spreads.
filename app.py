@@ -851,18 +851,56 @@ if "panel" in st.session_state:
     # ---- Coverage heatmap ----
     with tab3:
         st.markdown("**Data coverage heatmap — % non-null per variable / country**")
+
         cov_cols = [c for c in panel.columns
                     if c not in ("iso3", "iso2", "country_name", "group", "quarter")]
+
+        # Flag missing blocks so the user knows *why* the heatmap is narrow.
+        yield_cols  = [c for c in cov_cols if c in ("yield_10y", "spread_vs_us_bp", "spread_vs_de_bp")]
+        macro_cols  = [c for c in cov_cols if c in ("gdp_usd", "gdp_growth", "cpi_yoy",
+                                                     "debt_gdp", "cab_gdp", "reserves_mo", "trade_gdp")]
+        clim_cols   = [c for c in cov_cols if c in ("co2_kt", "co2_pc", "co2_gdp",
+                                                     "renew_share", "energy_gdp")]
+        bis_cols    = [c for c in cov_cols if c.startswith("bis_")]
+
+        missing_blocks = []
+        if not macro_cols: missing_blocks.append("macro (World Bank WDI)")
+        if not clim_cols:  missing_blocks.append("climate (World Bank CO₂ / energy)")
+        if not bis_cols:   missing_blocks.append("BIS government debt")
+        if missing_blocks:
+            mpa_box(
+                "warning",
+                "<b>Only the yield block is populated.</b> These modules returned no data: "
+                + ", ".join(f"<code>{m}</code>" for m in missing_blocks)
+                + ".<br>Check the sidebar toggles are on, and that the build log above didn't show red "
+                "warnings for World Bank / BIS fetches. World Bank and BIS don't need an API key — "
+                "they can fail intermittently if the host is slow."
+            )
+
         cov_mat = (panel.groupby("iso3")[cov_cols]
                         .apply(lambda d: d.notna().mean() * 100)
                         .round(1))
+
         fig = go.Figure(data=go.Heatmap(
-            z=cov_mat.values, x=cov_mat.columns, y=cov_mat.index,
+            z=cov_mat.values,
+            x=cov_mat.columns,
+            y=cov_mat.index,
             colorscale=[[0, "#FBE5E7"], [0.5, "#FFF6DD"], [1, "#E3F1E8"]],
-            zmin=0, zmax=100, colorbar=dict(title="%"),
+            zmin=0, zmax=100,
+            colorbar=dict(title="%"),
+            hovertemplate="<b>%{y}</b><br>%{x}: %{z:.1f}%<extra></extra>",
         ))
-        fig.update_layout(height=max(400, 18 * len(cov_mat)),
-                          title_font=dict(color=MPA_NAVY, size=15))
+        fig.update_layout(
+            title=dict(
+                text=f"Coverage across {len(cov_mat)} countries × {len(cov_cols)} variables",
+                font=dict(color=MPA_NAVY, size=15),
+                x=0.0, xanchor="left",
+            ),
+            height=max(400, 22 * len(cov_mat)),
+            margin=dict(l=60, r=20, t=60, b=60),
+            xaxis=dict(side="bottom", tickangle=-30),
+            yaxis=dict(autorange="reversed"),
+        )
         st.plotly_chart(fig, use_container_width=True)
 
     # ---- Download ----
