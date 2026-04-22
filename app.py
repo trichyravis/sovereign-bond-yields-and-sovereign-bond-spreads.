@@ -869,7 +869,7 @@ if "panel" in st.session_state:
         if not bis_cols:   missing_blocks.append("BIS government debt")
         if missing_blocks:
             mpa_box(
-                "warning",
+                "warn",
                 "<b>Only the yield block is populated.</b> These modules returned no data: "
                 + ", ".join(f"<code>{m}</code>" for m in missing_blocks)
                 + ".<br>Check the sidebar toggles are on, and that the build log above didn't show red "
